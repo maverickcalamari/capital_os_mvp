@@ -220,8 +220,11 @@ export const repository = {
       upsert: false,
     });
     if (error) throw new Error(`uploadReceipt: ${error.message}`);
-    const { data: pub } = supabase.storage.from('receipts').getPublicUrl(path);
-    return pub.publicUrl;
+    const { data, error: signedError } = await supabase.storage
+      .from('receipts')
+      .createSignedUrl(path, 3600);
+    if (signedError) throw new Error(`uploadReceipt: ${signedError.message}`);
+    return data.signedUrl;
   },
 
   // ---- Goals ----
