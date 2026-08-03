@@ -2,7 +2,6 @@ import { create } from 'zustand';
 import { supabase } from './supabase';
 import type { Profile, Settings } from './types';
 import { repository } from './repository';
-import { seedUserData } from './seed';
 
 type AuthState = {
   ready: boolean;
@@ -106,7 +105,6 @@ export function initAuth() {
           email: session.user.email ?? null,
           ready: true,
         });
-        await seedUserData(session.user.id);
         await Promise.all([useAuth.getState().refreshProfile(), useAuth.getState().refreshSettings()]);
       } else {
         useAuth.getState().clear();
