@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { supabase } from './supabase';
+import { accountUnavailable, accountsConfigured, supabase } from './supabase';
 import type { Profile, Settings } from './types';
 import { repository } from './repository';
 
@@ -30,6 +30,10 @@ export const useAuth = create<AuthState>((set, get) => ({
   settings: null,
 
   async signIn(email, password) {
+    if (!accountsConfigured) {
+      set({ error: accountUnavailable });
+      throw new Error(accountUnavailable);
+    }
     set({ loading: true, error: null });
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
@@ -40,6 +44,10 @@ export const useAuth = create<AuthState>((set, get) => ({
   },
 
   async signUp(email, password, displayName) {
+    if (!accountsConfigured) {
+      set({ error: accountUnavailable });
+      throw new Error(accountUnavailable);
+    }
     set({ loading: true, error: null });
     const { error } = await supabase.auth.signUp({
       email,
@@ -59,6 +67,10 @@ export const useAuth = create<AuthState>((set, get) => ({
   },
 
   async resetPassword(email) {
+    if (!accountsConfigured) {
+      set({ error: accountUnavailable });
+      throw new Error(accountUnavailable);
+    }
     set({ loading: true, error: null });
     const { error } = await supabase.auth.resetPasswordForEmail(email);
     if (error) {
@@ -96,6 +108,10 @@ let initialized = false;
 export function initAuth() {
   if (initialized) return;
   initialized = true;
+  if (!accountsConfigured) {
+    useAuth.setState({ ready: true });
+    return;
+  }
 
   supabase.auth.onAuthStateChange((event, session) => {
     (async () => {

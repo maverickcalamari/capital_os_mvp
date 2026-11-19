@@ -79,3 +79,9 @@ Set in `.env` (pre-populated in the hosted environment):
 
 - `VITE_SUPABASE_URL`
 - `VITE_SUPABASE_ANON_KEY`
+
+## Vercel deployment
+
+Use the Vite framework preset with Node.js 22, npm ci, and npm run build. The checked-in Vercel configuration serves dist and rewrites browser routes to the SPA. Without credentials, the app runs in guest mode. The planning copilot uses local calculations.
+
+For cloud accounts, set VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY in each deployment environment. The legacy VITE_SUPABASE_ANON_KEY remains supported. Use a publishable or anon key. Set the Auth Site URL and allowed redirect URLs to the intended deployment. On a new project, apply all checked-in migrations in order before enabling accounts, including the final private receipt storage migration. For an existing project, inspect migration history before any changes. Verify account isolation and receipt access using two test accounts.
